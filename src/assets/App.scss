@@ -1,5 +1,17 @@
+
 body {
   background-color: var(--bs-dark);
-  color: silver;
+  color: var(--bs-gray-100);
   margin: 16px;
+}
+
+a {
+  color: silver
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
 }
