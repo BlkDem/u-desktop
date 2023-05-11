@@ -7,13 +7,15 @@
         }"
     >
         <div class="card-header flex-space pb-2">
-            <h5 class="w-100 elipsis" @dblclick.prevent="switchFullscreenMode">
+            <h5 class="w-100 elipsis"
+              @dblclick.prevent="switchFullscreenMode"
+
+            >
             <a style="text-decoration: none;" data-toggle="collapse"
                 :href="'#'+cardId" aria-expanded="true" aria-controls="collapse-example"
 
                 id="heading-example" class="d-block">
                 <!-- <i class="fa fa-solid fa-caret-right"></i> -->
-                <i class="fa fa-solid fa-caret-down mx-2"></i>
                 {{ cardCaption }}
                 <span  :class="{'hide': !isAdditionalCaption}" style="overflow-wrap: break-word;">
                     - {{ cardCaptionAdd }}
@@ -42,9 +44,10 @@
                 <!-- <i class="fa-solid fa-compress"></i> -->
             </button>
         </div>
-        <div :id="cardId" class="collapse show"
+        <div :id="cardId" class="collapse"
+            :class="{'show': isExpanded}"
             aria-labelledby="heading-example">
-            <div class="card-body">
+            <div class="p-1">
                 <!-- <div class="card-caption">
 
 

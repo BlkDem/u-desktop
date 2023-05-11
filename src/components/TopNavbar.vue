@@ -1,4 +1,5 @@
 <template>
+  <div class="border-bottom border-2 border-secondary">
   <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark p-2">
     <div class="container-fluid">
       <a class="navbar-brand" href="#">Umolab Devices</a>
@@ -50,12 +51,15 @@
     <li v-for="(micro, key) in micros" :key="key">
 
       <a class="dropdown-item" href="#"
-        @click="setMicro(micro.id, micro.micro_name)"
+        @click="setMicro(micro)"
       >{{ micro.micro_name }}
 
       </a>
     </li>
   </ul>
+  </div>
+  <div>
+    <span class="navbar-brand">{{ deviceAddress }}</span>
   </div>
   <!-- end micros -->
 
@@ -72,11 +76,12 @@
       </div>
     </div>
   </nav>
-  <div class="row">
+</div>
+  <!-- <div class="row">
 
 
 
-  </div>
+  </div> -->
 </template>
 
 <script>
@@ -106,6 +111,8 @@ export default {
 
       selectedMicro: 'Select Micro',
       selectedMicroID: 0,
+
+      deviceAddress: ''
     }
   },
 
@@ -151,10 +158,11 @@ export default {
       this.getMicros(id)
     },
 
-    setMicro(id, micro_name) {
-      this.selectedMicro = micro_name
-      this.selectedMicroID = id
-      this.$emit('onMicroChange', id);
+    setMicro(item) {
+      this.selectedMicro = item.micro_name
+      this.selectedMicroID = item.id
+      this.deviceAddress = item.device_micro_idx + ' - ' + item.device_micro_desc
+      this.$emit('onMicroChange', item.id);
     },
 
     setParam(id) {

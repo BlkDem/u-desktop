@@ -8,19 +8,19 @@
   </div>
   <div class="row">
 
-    <div class="col-4 h-100">
+    <div class="col-3 h-100">
       <slot name="left">
 
       </slot>
     </div>
 
-    <div class="col-4 h-100">
+    <div class="col-3 h-100">
       <slot name="center">
 
       </slot>
     </div>
 
-    <div class="col-4">
+    <div class="col-6">
       <MyMqtt />
     </div>
 
