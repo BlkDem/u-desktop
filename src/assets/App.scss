@@ -11,7 +11,7 @@ body {
 }
 
 a {
-  color: var(--bs-primary);
+  color: var(--bs-warning);
   text-decoration: none;
 }
 
@@ -30,6 +30,15 @@ a {
 
 .hide {
   display: none;
+}
+
+#app {
+  /* font-family: Montserrat, Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: var(--bs-primary); */
+  margin-top: 68px;
 }
 
 ::-webkit-scrollbar {

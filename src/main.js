@@ -5,6 +5,8 @@ import 'bootstrap/dist/js/bootstrap.js';
 import '@fortawesome/fontawesome-free/css/all.css'
 import '@fortawesome/fontawesome-free/js/all.js'
 
+import "bootswatch/dist/slate/bootstrap.min.css";
+
 import axios from 'axios';
 window.axios = axios;
 

@@ -16,6 +16,7 @@
     "@popperjs/core": "^2.11.7",
     "bootstrap": "^5.2.3",
     "bootstrap-vue": "^2.23.1",
+    "bootswatch": "^5.2.3",
     "core-js": "^3.8.3",
     "dotenv": "^16.0.3",
     "mqtt": "^4.3.7",
