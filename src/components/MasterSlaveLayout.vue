@@ -11,7 +11,7 @@
       left
     </div>
     <div class="col-8">
-      main
+      <MyMqtt />
     </div>
   </div>
   <div class="row">
@@ -24,5 +24,13 @@
 </template>
 
 <script>
+
+import MyMqtt from './MyMqtt.vue';
+
+export default {
+  components: {
+    MyMqtt
+  }
+}
 
 </script>
