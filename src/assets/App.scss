@@ -1,5 +1,62 @@
+@font-face {
+  font-family: "Montserrat";
+  src: local("Montserrat-Regular.ttf"), url('./fonts/Montserrat-Regular.ttf') format('truetype');
+}
+
 body {
   background-color: var(--bs-dark);
-  color: silver;
+  color: var(--bs-gray-100);
   margin: 16px;
+  font-family: "Montserrat", serif ;
 }
+
+a {
+  color: var(--bs-warning);
+  text-decoration: none;
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+}
+
+.flex-left {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.hide {
+  display: none;
+}
+
+#app {
+  /* font-family: Montserrat, Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: var(--bs-primary); */
+  margin-top: 68px;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  /* border-radius: 30px; */
+  background: -webkit-gradient(linear, left top, left bottom, from(var(--bs-primary)), to(var(--bs-secondary)));
+  /* background: -webkit-gradient(linear-gradient(0, var(--bs-secondary), 0%, var(--bs-secondary), 50%, var(--bs-primary), 100%)); */
+  /* background: -webkit-gradient(linear-gradient(90deg, rgba(var(--bs-primary),1) 0%, rgba(var(--bs-secondary),1) 50%, rgba(var(--bs-rpimary),1) 100%)); */
+  /* box-shadow: inset 2px 2px 2px rgba(var(--bs-light),.25), inset -2px -2px 2px rgba(var(--bs-dark),.25); */
+}
+
+::-webkit-scrollbar-track {
+  background-color: var(--bs-light);
+  border-radius: 10px;
+  /* background: linear-gradient(to right, rgba(var(--bs-light),.25), rgba(var(--bs-light),.25) 1px,
+rgba(var(--bs-light),.25) 1px, rgba(var(--bs-light),.25)); */
+}
+
