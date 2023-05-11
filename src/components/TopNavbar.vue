@@ -17,24 +17,49 @@
         <button class="btn btn-primary" id="toggle-dark-mode">Toggle Dark Mode</button>
         <button class="btn btn-primary" id="reset-to-system">Reset to System Theme</button>
       </div>
+
+
+
       <div class="collapse navbar-collapse" id="navbarCollapse">
-        <ul class="navbar-nav me-auto mb-2 mb-md-0">
-          <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Link</a>
-          </li>
-          <li class="nav-item">
-            <a
-              class="nav-link disabled"
-              href="#"
-              tabindex="-1"
-              aria-disabled="true"
-              >Disabled</a
-            >
-          </li>
-        </ul>
+
+  <!-- Devices -->
+  <div class="dropdown px-2">
+  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+    {{ selectedDevice }}
+  </button>
+  <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+    <li v-for="(device, key) in devices" :key="key">
+
+      <a class="dropdown-item" href="#"
+        :class="{'disabled': device.micros_count<=0}"
+        @click="setDevice(device.id, device.device_name)"
+      >{{ device.device_name }}
+
+      </a>
+    </li>
+  </ul>
+  </div>
+  <!-- end devices -->
+
+  <!-- Micros -->
+  <div class="dropdown px-2">
+  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+    {{ selectedMicro }}
+  </button>
+  <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+    <li v-for="(micro, key) in micros" :key="key">
+
+      <a class="dropdown-item" href="#"
+        @click="setMicro(micro.id, micro.micro_name)"
+      >{{ micro.micro_name }}
+
+      </a>
+    </li>
+  </ul>
+  </div>
+  <!-- end micros -->
+
+
         <form class="hide">
           <input
             class="form-control me-2"
@@ -47,9 +72,98 @@
       </div>
     </div>
   </nav>
+  <div class="row">
+
+
+
+  </div>
 </template>
 
 <script>
+
+import axios from 'axios';
+
+export default {
+
+  emits: ['onMicroChange'],
+
+  data () {
+    return {
+      config: {
+        headers: {
+          Authorization: 'Bearer npFLOv5yRgtGA4wBhhAtPUnrS7RDXnkAeLtlr6el'
+        },
+      },
+
+      deviceLink: 'http://127.0.0.1:8000/api/devices/lookup/1/10',
+      microLink: 'http://127.0.0.1:8000/api/device_micros/read/page/1/10',
+
+      devices: [],
+      micros: [],
+
+      selectedDevice: 'Select Device',
+      selectedDeviceID: 0,
+
+      selectedMicro: 'Select Micro',
+      selectedMicroID: 0,
+    }
+  },
+
+  mounted() {
+    this.getDevices()
+  },
+
+  methods: {
+    async getDevices() {
+
+      const devicesData = await axios.get(
+        this.deviceLink,
+        this.config
+      )
+
+      this.devices = devicesData.data.data
+
+      console.log(this.devices)
+
+    },
+
+    async getMicros(id) {
+
+      console.log('getMicros')
+      const microsData = await axios.get(
+        this.microLink + '/' + id,
+        this.config
+      )
+
+      this.micros = microsData.data.data
+
+      console.log(this.micros)
+
+      return this.micros
+
+      // console.log(this.devices)
+
+    },
+
+    setDevice(id, device_name) {
+      this.selectedDevice = device_name
+      this.selectedDeviceID = id
+      this.getMicros(id)
+    },
+
+    setMicro(id, micro_name) {
+      this.selectedMicro = micro_name
+      this.selectedMicroID = id
+      this.$emit('onMicroChange', id);
+    },
+
+    setParam(id) {
+      console.log(id);
+
+    }
+  }
+}
+
 </script>
 
 <style>

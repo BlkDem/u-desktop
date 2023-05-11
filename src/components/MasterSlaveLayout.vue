@@ -7,8 +7,11 @@
     </div>
   </div>
   <div class="row">
-    <div class="col-4">
-      left
+    <div class="col-4 h-100">
+      <slot name="left">
+
+      </slot>
+
     </div>
     <div class="col-8">
       <MyMqtt />

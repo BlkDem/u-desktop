@@ -1,7 +1,16 @@
 <template>
   <MasterSlaveLayout>
     <template v-slot:top>
-      <TopNavbar></TopNavbar>
+      <TopNavbar
+        @onMicroChange = "onMicroChange"
+      ></TopNavbar>
+    </template>
+
+    <template v-slot:left>
+      <LoadControllers
+        :microId="microId"
+      >
+      </LoadControllers>
     </template>
 
     <template v-slot:bottom>
@@ -16,15 +25,31 @@
 import MasterSlaveLayout from './components/MasterSlaveLayout.vue'
 import TopNavbar from './components/TopNavbar.vue'
 import MainFooter from './components/MainFooter.vue'
+import LoadControllers from './components/LoadControllers.vue'
 
 export default {
   name: 'App',
   components: {
     MasterSlaveLayout,
     TopNavbar,
-    MainFooter
+    MainFooter,
+    LoadControllers
     // HelloWorld
+  },
+
+  data() {
+    return {
+      microId: '',
+    }
+  },
+
+  methods: {
+    onMicroChange(id) {
+      this.microId = id;
+      console.log('event: ', id);
+    }
   }
+
 }
 </script>
 
