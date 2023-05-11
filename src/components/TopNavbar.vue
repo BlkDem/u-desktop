@@ -1,7 +1,7 @@
 <template>
   <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
     <div class="container-fluid">
-      <a class="navbar-brand" href="#">Fixed navbar</a>
+      <a class="navbar-brand" href="#">Umolab Devices</a>
       <button
         class="navbar-toggler"
         type="button"
@@ -13,6 +13,10 @@
       >
         <span class="navbar-toggler-icon"></span>
       </button>
+      <div class="hide">
+        <button class="btn btn-primary" id="toggle-dark-mode">Toggle Dark Mode</button>
+        <button class="btn btn-primary" id="reset-to-system">Reset to System Theme</button>
+      </div>
       <div class="collapse navbar-collapse" id="navbarCollapse">
         <ul class="navbar-nav me-auto mb-2 mb-md-0">
           <li class="nav-item">
@@ -31,7 +35,7 @@
             >
           </li>
         </ul>
-        <form class="d-flex">
+        <form class="hide">
           <input
             class="form-control me-2"
             type="search"
@@ -47,3 +51,7 @@
 
 <script>
 </script>
+
+<style>
+@import '../assets/App.scss';
+</style>

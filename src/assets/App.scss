@@ -1,8 +1,13 @@
+@font-face {
+  font-family: "Montserrat";
+  src: local("Montserrat-Regular.ttf"), url('./fonts/Montserrat-Regular.ttf') format('truetype');
+}
 
 body {
   background-color: var(--bs-dark);
   color: var(--bs-gray-100);
   margin: 16px;
+  font-family: "Montserrat", serif ;
 }
 
 a {
@@ -14,4 +19,8 @@ a {
   align-items: center;
   justify-content: center;
   flex-direction: row;
+}
+
+.hide {
+  display: none;
 }

@@ -44,27 +44,10 @@
 
             <!-- Right -->
         </section>
-        <!-- Section: Social media -->
-
-
-
-        <!-- Section: Links  -->
-        <!-- <section class="mx-4 my-4" style="display: flex; justify-content: center;">
-            <object type="image/svg+xml" data="images/logo/u-logo2.svg" id="object_1" class="icon logo"
-                            style="width: 120px;">
-            </object>
-        </section> -->
-        <!-- Section: Links  -->
-
-        <!-- Copyright -->
-        <!-- <div class="text-center p-4" style="background-color: rgba(0, 0, 0, 0.05);">
-            © 2023 Copyright:
-            <a class="text-reset fw-bold" href="https://umolab.ru" target="_blank">Umolab</a>
-        </div> -->
-        <!-- Copyright -->
 </template>
 
 <script>
+
 </script>
 
 <style>
@@ -74,5 +57,9 @@
     flex-direction: row;
     justify-content: space-between;
     align-content: center;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
 }
 </style>
