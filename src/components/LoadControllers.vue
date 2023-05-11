@@ -1,28 +1,33 @@
 <template>
-  <div class=" params-panel">
-  <h3 class="text-primary flex-left">Params</h3>
-  <div class="p-2 border border-1 rounded-4">
+  <CommonCard :cardCaption="'Params'">
+  <div class="">
+  <!-- <div class="p-2 border border-1 rounded-4"> -->
   <div class="flex-left m-1 p-1 border border-1 rounded-2 text-white" v-for="(item, key) in params" :key="key">
     <i class="fa-solid fa-microchip fa-2x text-primary"></i>
     <div class="p-2">{{ item.id }}</div>
     <div>
 
       <a href="#"
-        @click.prevent="deviceClick(item.id)">
+        @click.prevent="pushParam(item)">
         {{ item.param_name }}
       </a>
-
+    <!-- </div> -->
     </div>
   </div>
-  </div>
 </div>
+</CommonCard>
 </template>
 
 <script>
 
 import axios from 'axios';
+import CommonCard from './CommonCard.vue'
 
 export default {
+
+  components: { CommonCard },
+
+  emits: ['pushItem'],
 
   props: {
     microId: {
@@ -42,7 +47,7 @@ export default {
       },
 
       // deviceLink: 'http://127.0.0.1:8000/api/devices/lookup/1/10',
-      paramLink: 'http://127.0.0.1:8000/api/micro_params/read/page/1/10/',
+      paramLink: 'http://127.0.0.1:8000/api/micro_params/read/page/1/20/',
 
       params: [],
 
@@ -74,6 +79,10 @@ export default {
 
     },
 
+    pushParam(item) {
+      this.$emit('pushItem', item)
+    }
+
   }
 }
 
@@ -89,6 +98,8 @@ export default {
     width: 25vw;
     overflow-y: auto;
 }
+
+
 
 
 </style>

@@ -9,8 +9,20 @@
     <template v-slot:left>
       <LoadControllers
         :microId="microId"
+        @pushItem="pushItem"
       >
       </LoadControllers>
+    </template>
+
+    <template v-slot:center>
+      <CommonCard :cardCaption="'Selected'">
+        <SelectedParams
+          :items="selectedParams"
+          @removeItem="removeItem"
+        >
+
+        </SelectedParams>
+      </CommonCard>
     </template>
 
     <template v-slot:bottom>
@@ -26,6 +38,8 @@ import MasterSlaveLayout from './components/MasterSlaveLayout.vue'
 import TopNavbar from './components/TopNavbar.vue'
 import MainFooter from './components/MainFooter.vue'
 import LoadControllers from './components/LoadControllers.vue'
+import CommonCard from './components/CommonCard.vue'
+import SelectedParams from './components/SelectedParams.vue'
 
 export default {
   name: 'App',
@@ -33,13 +47,17 @@ export default {
     MasterSlaveLayout,
     TopNavbar,
     MainFooter,
-    LoadControllers
-    // HelloWorld
+    LoadControllers,
+    CommonCard,
+    SelectedParams
   },
 
   data() {
     return {
       microId: '',
+
+      selectedParams: [],
+
     }
   },
 
@@ -47,7 +65,17 @@ export default {
     onMicroChange(id) {
       this.microId = id;
       console.log('event: ', id);
+    },
+
+    pushItem(item){
+      if (!this.selectedParams.includes(item))
+        this.selectedParams.push(item)
+    },
+
+    removeItem(key) {
+      this.selectedParams.splice(key, 1);
     }
+
   }
 
 }

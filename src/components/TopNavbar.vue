@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+  <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark p-2">
     <div class="container-fluid">
       <a class="navbar-brand" href="#">Umolab Devices</a>
       <button
@@ -24,7 +24,7 @@
 
   <!-- Devices -->
   <div class="dropdown px-2">
-  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+  <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
     {{ selectedDevice }}
   </button>
   <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
@@ -43,7 +43,7 @@
 
   <!-- Micros -->
   <div class="dropdown px-2">
-  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+  <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
     {{ selectedMicro }}
   </button>
   <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
