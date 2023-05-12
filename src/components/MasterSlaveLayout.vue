@@ -21,7 +21,9 @@
     </div>
 
     <div class="col-6">
-      <MyMqtt />
+      <slot name="right">
+        <MyMqtt />
+      </slot>
     </div>
 
   </div>

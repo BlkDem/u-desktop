@@ -19,10 +19,24 @@
         <SelectedParams
           :items="selectedParams"
           @removeItem="removeItem"
+          @setItemForm="setItemForm"
         >
 
         </SelectedParams>
       </CommonCard>
+    </template>
+
+    <template v-slot:right>
+
+      <CommonCard :cardCaption="'Setup'">
+        <SetupParam
+          :item="selectedParam"
+          @setNewParamValue="setNewParamValue"
+        >
+
+        </SetupParam>
+      </CommonCard>
+
     </template>
 
     <template v-slot:bottom>
@@ -40,6 +54,7 @@ import MainFooter from './components/MainFooter.vue'
 import LoadControllers from './components/LoadControllers.vue'
 import CommonCard from './components/CommonCard.vue'
 import SelectedParams from './components/SelectedParams.vue'
+import SetupParam from './components/SetupParam.vue'
 
 export default {
   name: 'App',
@@ -49,7 +64,8 @@ export default {
     MainFooter,
     LoadControllers,
     CommonCard,
-    SelectedParams
+    SelectedParams,
+    SetupParam
   },
 
   data() {
@@ -57,6 +73,11 @@ export default {
       microId: '',
 
       selectedParams: [],
+
+      selectedParam: {
+        id: 0,
+        param_name: ''
+      },
 
     }
   },
@@ -68,12 +89,25 @@ export default {
     },
 
     pushItem(item){
-      if (!this.selectedParams.includes(item))
+      if (this.selectedParams.length > 4) return;
+      if (!this.selectedParams.includes(item)) {
+        item['range_from'] = 0
+        item['range_to'] = 100
+        item['new_value'] = 0
         this.selectedParams.push(item)
+      }
     },
 
     removeItem(key) {
       this.selectedParams.splice(key, 1);
+    },
+
+    setItemForm(item) {
+      this.selectedParam = item;
+    },
+
+    setNewParamValue(newParam, value, item) {
+      this.selectedParams[this.selectedParams.indexOf(item)][newParam] = value
     }
 
   }
