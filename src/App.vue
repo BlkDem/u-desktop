@@ -18,8 +18,10 @@
       <CommonCard :cardCaption="'Selected'">
         <SelectedParams
           :items="selectedParams"
+          :logs="paramLogs"
           @removeItem="removeItem"
           @setItemForm="setItemForm"
+          @setItemFrequency="setItemFrequency"
         >
         </SelectedParams>
       </CommonCard>
@@ -80,6 +82,7 @@ export default {
       microId: '',
 
       selectedParams: [],
+      paramLogs: 'Logs',
 
       selectedParam: {
         id: 0,
@@ -90,6 +93,11 @@ export default {
   },
 
   methods: {
+
+    setLog(log) {
+      this.paramLogs += "\r\n" + log;
+    },
+
     onMicroChange(id) {
       this.microId = id;
       console.log('event: ', id);
@@ -100,6 +108,8 @@ export default {
       if (!this.selectedParams.includes(item)) {
 
         item.param_fullname = '/' + item.device_micro_idx + '/' + item.param_name
+        item.frequency = 0
+        item.function = 0
 
         switch (item.type_name) {
           case 'SIMPLE': {
@@ -129,7 +139,8 @@ export default {
           }
         }
 
-        console.log(item)
+        // console.log(item)
+        this.setLog('Param added: ' + item.param_name + ': ' + item.param_fullname)
         this.selectedParams.push(item)
       }
     },
@@ -140,6 +151,11 @@ export default {
 
     setItemForm(item) {
       this.selectedParam = item;
+    },
+
+    setItemFrequency(item, interval) {
+      item.frequency = interval;
+      console.log(this.selectedParams)
     },
 
     setNewParamValue(newParam, value, item) {

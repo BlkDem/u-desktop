@@ -1,13 +1,14 @@
 
 <template>
-  <CommonCard
+  <div></div>
+  <!-- <CommonCard
     :cardCaption="'MQTT (' + selectedParams.length + ')'"
   >
     <h4 class="text-warning"></h4>
     <div class="text-info" v-for="(item, key) in selectedParams" :key="key">
       {{ item.param_fullname }} -> {{ item.param_value }}
     </div>
-  </CommonCard>
+  </CommonCard> -->
 </template>
 
 <script>
