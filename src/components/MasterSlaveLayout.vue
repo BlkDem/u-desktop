@@ -14,15 +14,9 @@
       </slot>
     </div>
 
-    <div class="col-3 h-100">
+    <div class="col-9 h-100">
       <slot name="center">
 
-      </slot>
-    </div>
-
-    <div class="col-6">
-      <slot name="right">
-        <MyMqtt />
       </slot>
     </div>
 
@@ -37,13 +31,5 @@
 </template>
 
 <script>
-
-import MyMqtt from './MyMqtt.vue';
-
-export default {
-  components: {
-    MyMqtt
-  }
-}
 
 </script>

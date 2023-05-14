@@ -65,7 +65,7 @@
 
 <script>
 
-import MakeID from '../helpers/MakeID';
+import MakeID from '../helpers/makeid';
 
 export default {
 

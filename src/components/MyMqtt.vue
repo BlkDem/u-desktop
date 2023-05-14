@@ -1,29 +1,33 @@
 
 <template>
-  <h1>MQTT</h1>
+  <CommonCard
+    :cardCaption="'MQTT (' + selectedParams.length + ')'"
+  >
+    <h4 class="text-warning"></h4>
+    <div class="text-info" v-for="(item, key) in selectedParams" :key="key">
+      {{ item.param_fullname }} -> {{ item.param_value }}
+    </div>
+  </CommonCard>
 </template>
 
 <script>
-// import mqtt from '../../node_modules/mqtt/mqtt';
-// import mqtt from '../../node_modules/mqtt-packet/packet';
 import * as mqtt from "mqtt/dist/mqtt";
-import MakeID from '../helpers/MakeID';
-// import APIConstants from '../api/rest_api';
+import MakeID from '../helpers/makeid';
+import Config from '../config';
+import CommonCard from "./CommonCard.vue";
 // import ParsingErrors from '../helpers/ParsingErrors';
 
 /* eslint-disable */
 
 export default {
 
+    components: { CommonCard },
+
     name: 'MQTT',
 
     emits: ['onConnect', 'onMessage', 'onError' ],
 
-    props: {
-        paramItems: {
-            type: Array,
-        }
-    },
+    props: ['selectedParams'],
 
     data() {
         return {
@@ -46,7 +50,7 @@ export default {
                 password: '',
             },
 
-            subscription: {
+            subscribtion: {
                 topic: '',
                 qos: 0,
             },
@@ -67,9 +71,7 @@ export default {
     },
 
     created() {
-
         this.connection.clientId = MakeID.makeId(8, 'mqtt_umolab_')
-
     },
 
     mounted() {
@@ -82,40 +84,46 @@ export default {
         console.log(this.client.connected)
     },
 
+    watch: {
+      selectedParams: {
+        immediate: true,
+        deep: true,
+        handler(newValue, oldValue) {
+          this.processParams()
+          //console.log(newValue, oldValue)
+        }
+      }
+    },
+
     methods: {
 
-        getMQTTParams() {
+        async getMQTTParams() {
 
-            this.connection.host = "ice9.umolab.ru"
-            this.connection.protocol = "wss"
-            this.connection.port = "9883"
+            try {
 
-            this.createConnection()
+                await axios.get(Config.restHost + 'presets/group/MQTT', Config.config)
+                    .then(response => {
+                        const configMQTT = response.data.data
 
-            // try {
-
-            //     await axios.get(APIConstants.api_presets_group + 'MQTT')
-            //         .then(response => {
-            //             const configMQTT = response.data.data
-
-            //             for (let item in configMQTT) {
-            //                 if (configMQTT[item].preset_key === 'MQTT_SERVER') this.connection.host = configMQTT[item].preset_value
-            //                 if (configMQTT[item].preset_key === 'MQTT_PROTOCOL') this.connection.protocol = configMQTT[item].preset_value
-            //                 if (configMQTT[item].preset_key === 'MQTT_PORT') this.connection.port = configMQTT[item].preset_value
-            //             }
-            //             this.createConnection()
-            //         })
-            // } catch (error) {
-            //     console.log(error);
+                        for (let item in configMQTT) {
+                            if (configMQTT[item].preset_key === 'MQTT_SERVER') this.connection.host = configMQTT[item].preset_value
+                            if (configMQTT[item].preset_key === 'MQTT_PROTOCOL') this.connection.protocol = configMQTT[item].preset_value
+                            if (configMQTT[item].preset_key === 'MQTT_PORT') this.connection.port = configMQTT[item].preset_value
+                        }
+                        this.createConnection()
+                    })
+            } catch (error) {
+                console.log(error);
 
 
-            // }
+            }
         },
 
         processParams() {
-            for (let item in this.paramItems) {
-                if(this.paramItems[item]['param_in'] <= 0) {
-                    this.doSubscribe(this.paramItems[item]['param_fullname'])
+            for (let item in this.selectedParams) {
+              // console.log(item)
+                if(this.selectedParams[item]['param_in'] <= 0) {
+                    this.doSubscribe(this.selectedParams[item]['param_fullname'])
                 }
             }
         },
@@ -159,13 +167,14 @@ export default {
             })
 
             this.client.on('message', (topic, message) => {
+                // console.log(topic, message)
                 this.$emit('onMessage', topic, message.toString())
             })
         },
 
         // subscribtions
         doSubscribe(topic) {
-            //   const { topic, qos } = this.subscription
+            //   const { topic, qos } = this.subscribtion
             const qos = 0
 
             this.client.subscribe(topic, {
@@ -176,14 +185,14 @@ export default {
                     return
                 }
                 this.subscribeSuccess = true
-                // console.log('MQTT: Subscribe to topics res', res)
+                console.log('MQTT: Subscribe to topics res', res)
             })
         },
         // unsubsribtions
         doUnSubscribe() {
             const {
                 topic
-            } = this.subscription
+            } = this.subscribtion
             this.client.unsubscribe(topic, error => {
                 if (error) {
                     console.log('MQTT: Unsubscribe error', error)

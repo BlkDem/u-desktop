@@ -2,10 +2,12 @@
   <CommonCard :cardCaption="'Params'">
   <div class="">
   <!-- <div class="p-2 border border-1 rounded-4"> -->
-  <div class="flex-left m-1 p-1 border border-1 rounded-2 text-white" v-for="(item, key) in params" :key="key">
-    <i class="fa-solid fa-microchip fa-2x text-info"></i>
-    <div class="p-2">{{ item.id }}</div>
-    <div>
+  <div class="m-1 py-1 px-2 border border-1 rounded-2 text-white row" v-for="(item, key) in params" :key="key">
+    <div class="col-1">
+      <i class="fa-solid fa-microchip text-info"></i>
+    </div>
+    <div class="col-3 text-center">{{ item.id }}</div>
+    <div class="col-7">
 
       <a href="#"
         @click.prevent="pushParam(item)">
@@ -22,6 +24,7 @@
 
 import axios from 'axios';
 import CommonCard from './CommonCard.vue'
+import Config from '@/config';
 
 export default {
 
@@ -31,7 +34,7 @@ export default {
 
   props: {
     microId: {
-      type: String,
+      default: undefined,
     }
   },
 
@@ -47,7 +50,7 @@ export default {
       },
 
       // deviceLink: 'http://127.0.0.1:8000/api/devices/lookup/1/10',
-      paramLink: 'http://127.0.0.1:8000/api/micro_params/read/page/1/20/',
+      // paramLink: 'http://127.0.0.1:8000/api/micro_params/read/page/1/20/',
 
       params: [],
 
@@ -69,7 +72,7 @@ export default {
     async getParams(id) {
 
       const paramsData = await axios.get(
-        this.paramLink + id,
+        Config.paramLink + id,
         this.config
       )
 

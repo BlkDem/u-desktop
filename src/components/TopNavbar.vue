@@ -87,6 +87,7 @@
 <script>
 
 import axios from 'axios';
+import Config from '@/config';
 
 export default {
 
@@ -94,14 +95,7 @@ export default {
 
   data () {
     return {
-      config: {
-        headers: {
-          Authorization: 'Bearer npFLOv5yRgtGA4wBhhAtPUnrS7RDXnkAeLtlr6el'
-        },
-      },
 
-      deviceLink: 'http://127.0.0.1:8000/api/devices/lookup/1/10',
-      microLink: 'http://127.0.0.1:8000/api/device_micros/read/page/1/10',
 
       devices: [],
       micros: [],
@@ -124,8 +118,8 @@ export default {
     async getDevices() {
 
       const devicesData = await axios.get(
-        this.deviceLink,
-        this.config
+        Config.deviceLink,
+        Config.config
       )
 
       this.devices = devicesData.data.data
@@ -138,13 +132,13 @@ export default {
 
       console.log('getMicros')
       const microsData = await axios.get(
-        this.microLink + '/' + id,
-        this.config
+        Config.microLink + '/' + id,
+        Config.config
       )
 
       this.micros = microsData.data.data
 
-      console.log(this.micros)
+      // console.log(this.micros)
 
       return this.micros
 
