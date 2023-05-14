@@ -26,7 +26,7 @@ export default {
 
     name: 'MQTT',
 
-    emits: ['onConnect', 'onMessage', 'onError' ],
+    emits: ['onConnect', 'onMessage', 'onError', 'setLog' ],
 
     props: ['selectedParams'],
 
@@ -98,36 +98,39 @@ export default {
 
     methods: {
 
-        async getMQTTParams() {
+      setLog(log_level, log) {
+        this.$emit('setLog', log_level, log)
+      },
 
-            try {
+      async getMQTTParams() {
 
-                await axios.get(Config.restHost + 'presets/group/MQTT', Config.config)
-                    .then(response => {
-                        const configMQTT = response.data.data
+        try {
 
-                        for (let item in configMQTT) {
-                            if (configMQTT[item].preset_key === 'MQTT_SERVER') this.connection.host = configMQTT[item].preset_value
-                            if (configMQTT[item].preset_key === 'MQTT_PROTOCOL') this.connection.protocol = configMQTT[item].preset_value
-                            if (configMQTT[item].preset_key === 'MQTT_PORT') this.connection.port = configMQTT[item].preset_value
-                        }
-                        this.createConnection()
-                    })
-            } catch (error) {
-                console.log(error);
+          await axios.get(Config.restHost + 'presets/group/MQTT', Config.config)
+            .then(response => {
+              const configMQTT = response.data.data
 
+              for (let item in configMQTT) {
+                if (configMQTT[item].preset_key === 'MQTT_SERVER') this.connection.host = configMQTT[item].preset_value
+                if (configMQTT[item].preset_key === 'MQTT_PROTOCOL') this.connection.protocol = configMQTT[item].preset_value
+                if (configMQTT[item].preset_key === 'MQTT_PORT') this.connection.port = configMQTT[item].preset_value
+              }
+              this.createConnection()
+            })
+        } catch (error) {
+          console.log(error);
+        }
+      },
 
-            }
-        },
-
-        processParams() {
-            for (let item in this.selectedParams) {
-              // console.log(item)
-                if(this.selectedParams[item]['param_in'] <= 0) {
-                    this.doSubscribe(this.selectedParams[item]['param_fullname'])
-                }
-            }
-        },
+      processParams() {
+        for (let item in this.selectedParams) {
+          // console.log(item)
+          if (this.selectedParams[item]['param_in'] <= 0) {
+            this.doSubscribe(this.selectedParams[item]['param_fullname'])
+            this.setLog(0, 'Topic: ' +this.selectedParams[item]['param_fullname'] + ' subscribed');
+          }
+        }
+      },
 
         createConnection() {
 
@@ -158,6 +161,7 @@ export default {
 
             this.client.on('connect', () => {
                 console.log('MQTT: Connection succeeded!')
+                this.setLog(0, 'MQTT: Connection succeeded!')
                 this.$emit('onConnect', true)
                 this.processParams()
             })
@@ -168,8 +172,10 @@ export default {
             })
 
             this.client.on('message', (topic, message) => {
-                // console.log(topic, message)
+                console.log(topic, message)
+                this.setLog(0, 'MQTT topic: ' + topic + ' message: ' + message.toString())
                 this.$emit('onMessage', topic, message.toString())
+
             })
         },
 
@@ -186,7 +192,10 @@ export default {
                     return
                 }
                 this.subscribeSuccess = true
-                console.log('MQTT: Subscribe to topics res', res)
+                if (!res) {
+                  this.setLog(0, 'MQTT: Subscribe to topics ' + JSON.stringify(res))
+                  console.log('MQTT: Subscribe to topics res', res)
+                }
             })
         },
         // unsubsribtions

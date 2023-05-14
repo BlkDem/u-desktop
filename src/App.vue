@@ -22,6 +22,7 @@
           @removeItem="removeItem"
           @setItemForm="setItemForm"
           @setItemFrequency="setItemFrequency"
+          @setLog="setLog"
         >
         </SelectedParams>
       </CommonCard>
@@ -29,6 +30,7 @@
       <MyMqtt
           :selectedParams="selectedParams"
           @onMessage="onMessage"
+          @setLog="setLog"
       ></MyMqtt>
 
     </template>
@@ -54,14 +56,12 @@
 </template>
 
 <script>
-// import HelloWorld from './components/HelloWorld.vue'
 import MasterSlaveLayout from './components/MasterSlaveLayout.vue'
 import TopNavbar from './components/TopNavbar.vue'
 import MainFooter from './components/MainFooter.vue'
 import LoadControllers from './components/LoadControllers.vue'
 import CommonCard from './components/CommonCard.vue'
 import SelectedParams from './components/SelectedParams.vue'
-// import SetupParam from './components/SetupParam.vue'
 import MyMqtt from './components/MyMqtt.vue';
 
 export default {
@@ -73,7 +73,6 @@ export default {
     LoadControllers,
     CommonCard,
     SelectedParams,
-    // SetupParam,
     MyMqtt
   },
 
@@ -94,17 +93,30 @@ export default {
 
   methods: {
 
-    setLog(log) {
-      this.paramLogs += "\r\n" + log;
+    setLog(log_level=0, ...args) {
+      let log_level_text;
+      switch (log_level) {
+        case 0: log_level_text = 'info: '; break;
+        case 1: log_level_text = 'warning: '; break;
+        case 2: log_level_text = 'error: '; break;
+        default: log_level_text = 'info: '; break;
+      }
+      if (this.paramLogs==='Logs') this.paramLogs = ''
+      this.paramLogs += log_level_text + [...args].join(' ') + "\r\n";
     },
 
     onMicroChange(id) {
       this.microId = id;
+      this.setLog(0, 'Micro selected: ', id);
       console.log('event: ', id);
     },
 
     pushItem(item){
-      if (this.selectedParams.length > 4) return;
+      if (this.selectedParams.length > 4) {
+        this.setLog(1, 'Max selected param count is 5')
+        return;
+      }
+
       if (!this.selectedParams.includes(item)) {
 
         item.param_fullname = '/' + item.device_micro_idx + '/' + item.param_name
@@ -140,7 +152,7 @@ export default {
         }
 
         // console.log(item)
-        this.setLog('Param added: ' + item.param_name + ': ' + item.param_fullname)
+        this.setLog(0, 'Param added: ' + item.param_name + ': ' + item.param_fullname)
         this.selectedParams.push(item)
       }
     },

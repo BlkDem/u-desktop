@@ -63,7 +63,7 @@
 
 export default {
 
-  emits: ['removeItem', 'setItemForm', 'setItemFrequency'],
+  emits: ['removeItem', 'setLog', 'setItemFrequency'],
 
   props: {
     items: {
@@ -91,25 +91,32 @@ export default {
 
   methods: {
 
+    getParamNameID(key) {
+      return this.items[key].param_name + ' (' + this.items[key].id + ')';
+    },
+
     setTextareaScroll() {
       var textarea = document.getElementById('textarea_id');
-      setInterval(function(){
-        // textarea.value += Math.random()+'\n';
+      setInterval(() => {
         textarea.scrollTop = textarea.scrollHeight;
       }, 1000);
     },
 
     removeItem(key) {
-      this.$emit('removeItem', key)
-    },
-
-    setItemForm(key) {
-      this.$emit('setItemForm', this.items[key]);
+      this.setLog(1, 'Item removed: ' + this.getParamNameID(key));
+      this.$emit('removeItem', key);
     },
 
     setFrequency(key, interval){
+      this.setLog(0,
+        'Set Frequency for Item: ' + this.getParamNameID(key) +
+        ' - Interval: ' + interval
+      );
       this.$emit('setItemFrequency', this.items[key], interval)
-      // this.items[key].frequency = interval;
+    },
+
+    setLog(log_level, log){
+      this.$emit('setLog', log_level, log)
     }
   }
 }
