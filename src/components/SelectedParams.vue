@@ -25,7 +25,20 @@
       </div>
 
       <div class="col-2">
-        gen
+        <div class="dropdown">
+          <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton1"
+            data-bs-toggle="dropdown" aria-expanded="false">
+            {{ paramFunc[key].FuncName }}
+          </button>
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+            <li><a class="dropdown-item" @click="setFunction(key, 'F_RANGE', 0, 100)" href="#">Range 0-100</a></li>
+            <li><a class="dropdown-item" @click="setFunction(key, 'F_RANGE', 0, 1000)" href="#">Range 0-1000</a></li>
+            <li><a class="dropdown-item" @click="setFunction(key, 'F_TIME')" href="#">Time</a></li>
+            <li><a class="dropdown-item" @click="setFunction(key, 'F_COUNTER', items[key].param_value)" href="#">Counter</a></li>
+            <li><a class="dropdown-item" @click="setFunction(key, 'F_RGB')" href="#">RGB</a></li>
+            <li><a class="dropdown-item" @click="setFunction(key, 'F_SWITCH')" href="#">Switch (0-1)</a></li>
+          </ul>
+        </div>
       </div>
 
       <div class="col-1">
@@ -45,7 +58,7 @@
       </div>
 
 
-      <div class="col-1">
+      <div class="col-1 text-end">
         <a href="#" @click="removeItem(key)">
           <i class="fa-solid fa-xmark text-danger"></i>
         </a>
@@ -54,12 +67,14 @@
     </div>
 
   </div>
-  <textarea class="form-control stick-bottom bg-dark text-info" v-bind:value="logs" rows="8" id="textarea_id"></textarea>
+  <textarea class="form-control stick-bottom bg-dark text-info" :value="logs" rows="8" id="textarea_id"></textarea>
 </div>
 
 </template>
 
 <script>
+
+import Generators from '../helpers/generators';
 
 export default {
 
@@ -86,7 +101,7 @@ export default {
   },
 
   mounted() {
-    this.setTextareaScroll();
+    this.textareaScrollBottom();
   },
 
   methods: {
@@ -95,7 +110,7 @@ export default {
       return this.items[key].param_name + ' (' + this.items[key].id + ')';
     },
 
-    setTextareaScroll() {
+    textareaScrollBottom() {
       var textarea = document.getElementById('textarea_id');
       setInterval(() => {
         textarea.scrollTop = textarea.scrollHeight;
@@ -105,6 +120,15 @@ export default {
     removeItem(key) {
       this.setLog(1, 'Item removed: ' + this.getParamNameID(key));
       this.$emit('removeItem', key);
+    },
+
+    setFunction(key, func, ...args) {
+      this.paramFunc[key].func = func;
+      this.paramFunc[key].args = args;
+      this.paramFunc[key].FuncName = Generators.Gens[func].FuncName;
+
+      console.log('paramFunc: ', this.paramFunc)
+      // console.log(key, Generators.Gens[func].value(...args));
     },
 
     setFrequency(key, interval){
@@ -124,11 +148,6 @@ export default {
 </script>
 
 <style scoped>
-.ul-top {
-  z-index: 101;
-  position: fixed;
-  /* margin-top: -4px; */
-}
 .max-height-76vh {
   height: 76vh;
 }

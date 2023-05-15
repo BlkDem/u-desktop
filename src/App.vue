@@ -94,6 +94,8 @@ export default {
   methods: {
 
     setLog(log_level=0, ...args) {
+      //Max Log Size is 2 kB
+      if (this.paramLogs.length > 2048) this.paramLogs = '';
       let log_level_text;
       switch (log_level) {
         case 0: log_level_text = 'info: '; break;
@@ -121,7 +123,7 @@ export default {
 
         item.param_fullname = '/' + item.device_micro_idx + '/' + item.param_name
         item.frequency = 0
-        item.function = 0
+        item.function = ''
 
         switch (item.type_name) {
           case 'SIMPLE': {
@@ -187,6 +189,6 @@ export default {
 </script>
 
 <style>
-@import './assets/App.scss';
+/* @import './assets/App.scss'; */
 
 </style>

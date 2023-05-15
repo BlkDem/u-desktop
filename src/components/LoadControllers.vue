@@ -73,7 +73,7 @@ export default {
 
       const paramsData = await axios.get(
         Config.paramLink + id,
-        this.config
+        Config.config
       )
 
       this.params = paramsData.data.data
