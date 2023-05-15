@@ -1,11 +1,26 @@
 import random from "../helpers/random"
 
+function* counter(start) {
+  // let from = start;
+  // while (true) {
+  //   yield from++;
+  // }
+  while (true) {
+    yield start++
+  }
+}
+
 export default {
+
   Gens: {
     F_RANGE: {
       FuncName: 'Range',
       value: (...args) => {
-        return random.Random(args[0], args[1]);
+        console.log('range: ', args[0])
+        return random.Random(
+          parseInt(args[0][0]),
+          parseInt(args[0][1])
+        );
       }
     },
 
@@ -27,9 +42,12 @@ export default {
     F_COUNTER: {
       FuncName: 'Counter',
       value: (...args) => {
-        let i = parseInt(args[0])
-        console.log('i: ', i, args);
-        return ++i;
+        let i = counter(parseInt(args[0][0]))
+        // i.next()
+        console.log('generated', i.next());
+        // parseInt(args[0])
+        // console.log('i: ', i, args);
+        return parseInt(i.next().value);
       },
     },
 

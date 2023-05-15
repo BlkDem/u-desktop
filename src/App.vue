@@ -2,8 +2,9 @@
   <MasterSlaveLayout>
     <template v-slot:top>
       <TopNavbar
-        :paramsCount="selectedParams.length"
+
         @onMicroChange = "onMicroChange"
+        @playStopAction = "playStopAction"
       ></TopNavbar>
     </template>
 
@@ -21,36 +22,24 @@
         :cardCaptionAdd="deviceAddress"
         :isAdditionalCaption="true"
       >
-        <SelectedParams
+        <SelectedParams ref="selectedParamsRef"
           :items="selectedParams"
           :logs="paramLogs"
           @removeItem="removeItem"
           @setItemFrequency="setItemFrequency"
           @setLog="setLog"
+          @syncParam="syncParam"
         >
         </SelectedParams>
       </CommonCard>
 
-      <MyMqtt
+      <MyMqtt ref="myMqtt"
           :selectedParams="selectedParams"
           @onMessage="onMessage"
           @setLog="setLog"
       ></MyMqtt>
 
     </template>
-
-    <!-- <template v-slot:right>
-
-      <CommonCard :cardCaption="'Setup'">
-        <SetupParam
-          :item="selectedParam"
-          @setNewParamValue="setNewParamValue"
-        >
-
-        </SetupParam>
-      </CommonCard>
-
-    </template> -->
 
     <template v-slot:bottom>
       <MainFooter></MainFooter>
@@ -60,13 +49,14 @@
 </template>
 
 <script>
-import MasterSlaveLayout from './components/MasterSlaveLayout.vue'
-import TopNavbar from './components/TopNavbar.vue'
-import MainFooter from './components/MainFooter.vue'
-import LoadControllers from './components/LoadControllers.vue'
-import CommonCard from './components/CommonCard.vue'
-import SelectedParams from './components/SelectedParams.vue'
+import MasterSlaveLayout from './components/MasterSlaveLayout.vue';
+import TopNavbar from './components/TopNavbar.vue';
+import MainFooter from './components/MainFooter.vue';
+import LoadControllers from './components/LoadControllers.vue';
+import CommonCard from './components/CommonCard.vue';
+import SelectedParams from './components/SelectedParams.vue';
 import MyMqtt from './components/MyMqtt.vue';
+import Generators from './emulator/generators';
 
 export default {
   name: 'App',
@@ -88,10 +78,7 @@ export default {
       selectedParams: [],
       paramLogs: 'Logs',
 
-      selectedParam: {
-        id: 0,
-        param_name: ''
-      },
+      timers: [],
 
     }
   },
@@ -114,10 +101,55 @@ export default {
       this.paramLogs += log_level_text + [...args].join(' ') + "\r\n";
     },
 
+    startActions() {
+      let freq = 0
+      for (let item in this.selectedParams) {
+        freq = this.selectedParams[item].frequency * 1000
+        if (isNaN(freq)) continue;
+        // console.log(freq)
+        this.timers.push(
+            setInterval(() => {
+              // console.log('timer', this.selectedParams[item])
+              // console.log(Generators.Gens[this.selectedParams[item].func].value(this.selectedParams[item].args))
+              this.$refs.myMqtt.doPublish(
+                this.selectedParams[item].param_fullname,
+                Generators.Gens[this.selectedParams[item].func].value(this.selectedParams[item].args).toString()
+              )
+          }, freq)
+        );
+      }
+      console.log(this.timers)
+    },
+
+    stopActions() {
+      for (let item in this.timers) {
+        clearInterval(this.timers[item]);
+      }
+      this.timers = []
+    },
+
+    playStopAction(isExecuted) {
+      if (!isExecuted) {
+        this.stopActions();
+      } else {
+        this.startActions();
+      }
+    },
+
     onMicroChange(id, deviceAddress) {
       this.microId = id;
       this.deviceAddress = deviceAddress;
       this.setLog(0, 'Micro selected: ', `(${id})`, deviceAddress);
+    },
+
+    syncParam(key, item) {
+      this.selectedParams[key] = item;
+      console.log(this.selectedParams[key])
+    },
+
+    //set the generator frequency for the current param
+    setItemFrequency(item, interval) {
+      item.frequency = interval;
     },
 
     pushItem(item){
@@ -133,6 +165,7 @@ export default {
 
         //create param full path for MQTT
         item.param_fullname = '/' + item.device_micro_idx + '/' + item.param_name
+        item.timerId = -1;
 
         this.setLog(0, 'Param added: ' + item.param_name + ': ' + item.param_fullname)
         this.selectedParams.push(item)
@@ -144,16 +177,7 @@ export default {
       this.selectedParams.splice(key, 1);
     },
 
-    //set the generator frequency for the current param
-    setItemFrequency(item, interval) {
-      item.frequency = interval;
-    },
-
-
-    // setNewParamValue(newParam, value, item) {
-    //   this.selectedParams[this.selectedParams.indexOf(item)][newParam] = value
-    // },
-
+    // MQTT messages event
     onMessage(topic, message) {
       for (let item in this.selectedParams) {
         if (this.selectedParams[item].param_fullname === topic) {

@@ -49,29 +49,20 @@
               </li>
             </ul>
           </div>
-          <!-- <div>
-            <span class="navbar-brand">{{ deviceAddress }}</span>
-          </div> -->
-          <!-- end micros -->
-
-          <!-- <form class="hide">
-            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
-            <button class="btn btn-outline-success" type="submit">Search</button>
-          </form> -->
         </div>
         <div>
-            <button class="btn btn-primary" :disabled="paramsCount===0">
-              <i class="fa-solid text-success" :class="{'fa-play': !isExecuted, 'fa-stop': isExecuted}"></i>
-            </button>
-          </div>
+          <button v-if="!isExecuted" class="btn btn-primary"
+            @click="isExecuted=!isExecuted">
+            <i class="fa-solid fa-play text-success"></i>
+          </button>
+          <button v-if="isExecuted" class="btn btn-primary"
+            @click="isExecuted=!isExecuted">
+            <i class="fa-solid fa-stop text-danger"></i>
+          </button>
+        </div>
       </div>
     </nav>
   </div>
-  <!-- <div class="row">
-
-
-
-  </div> -->
 </template>
 
 <script>
@@ -81,13 +72,12 @@ import Config from '@/config';
 
 export default {
 
-  emits: ['onMicroChange'],
+  emits: ['onMicroChange', 'playStopAction'],
 
   props: ['paramsCount'],
 
   data () {
     return {
-
 
       devices: [],
       micros: [],
@@ -106,6 +96,12 @@ export default {
 
   mounted() {
     this.getDevices()
+  },
+
+  watch: {
+    isExecuted() {
+      this.$emit('playStopAction', this.isExecuted)
+    }
   },
 
   methods: {
@@ -132,11 +128,7 @@ export default {
 
       this.micros = microsData.data.data
 
-      // console.log(this.micros)
-
       return this.micros
-
-      // console.log(this.devices)
 
     },
 
@@ -155,8 +147,8 @@ export default {
 
     setParam(id) {
       console.log(id);
-
     }
+
   }
 }
 

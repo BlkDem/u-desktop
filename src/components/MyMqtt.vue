@@ -80,7 +80,6 @@ export default {
     },
 
     beforeUnmount() {
-
         this.destroyConnection()
         console.log(this.client.connected)
     },
