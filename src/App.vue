@@ -2,6 +2,7 @@
   <MasterSlaveLayout>
     <template v-slot:top>
       <TopNavbar
+        :paramsCount="selectedParams.length"
         @onMicroChange = "onMicroChange"
       ></TopNavbar>
     </template>
@@ -15,12 +16,15 @@
     </template>
 
     <template v-slot:center>
-      <CommonCard :cardCaption="'Selected'">
+      <CommonCard
+        :cardCaption="'Selected'"
+        :cardCaptionAdd="deviceAddress"
+        :isAdditionalCaption="true"
+      >
         <SelectedParams
           :items="selectedParams"
           :logs="paramLogs"
           @removeItem="removeItem"
-          @setItemForm="setItemForm"
           @setItemFrequency="setItemFrequency"
           @setLog="setLog"
         >
@@ -79,6 +83,7 @@ export default {
   data() {
     return {
       microId: '',
+      deviceAddress: 'please select a device',
 
       selectedParams: [],
       paramLogs: 'Logs',
@@ -96,85 +101,58 @@ export default {
     setLog(log_level=0, ...args) {
       //Max Log Size is 2 kB
       if (this.paramLogs.length > 2048) this.paramLogs = '';
-      let log_level_text;
+
+      let log_level_text = 'undefined: ';
       switch (log_level) {
         case 0: log_level_text = 'info: '; break;
         case 1: log_level_text = 'warning: '; break;
         case 2: log_level_text = 'error: '; break;
-        default: log_level_text = 'info: '; break;
       }
+
+      //Clear init value
       if (this.paramLogs==='Logs') this.paramLogs = ''
       this.paramLogs += log_level_text + [...args].join(' ') + "\r\n";
     },
 
-    onMicroChange(id) {
+    onMicroChange(id, deviceAddress) {
       this.microId = id;
-      this.setLog(0, 'Micro selected: ', id);
-      console.log('event: ', id);
+      this.deviceAddress = deviceAddress;
+      this.setLog(0, 'Micro selected: ', `(${id})`, deviceAddress);
     },
 
     pushItem(item){
+
+      //Max generate param count is 5
       if (this.selectedParams.length > 4) {
         this.setLog(1, 'Max selected param count is 5')
         return;
       }
 
+      //Ignore if exists
       if (!this.selectedParams.includes(item)) {
 
+        //create param full path for MQTT
         item.param_fullname = '/' + item.device_micro_idx + '/' + item.param_name
-        item.frequency = 0
-        item.function = ''
 
-        switch (item.type_name) {
-          case 'SIMPLE': {
-            item['new_value'] = 0;
-            break;
-          }
-          case 'BUTTON': {
-            item['new_value'] = 0;
-            break;
-          }
-          case 'SWITCH': {
-            item['new_value'] = 0;
-            break;
-          }
-          case 'CHECK': {
-            item['checked'] = false;
-            break;
-          }
-          case 'COLOR': {
-            item['new_color'] = 0;
-            break;
-          }
-          case 'RANGE': {
-            item['range_from'] = 0
-            item['range_to'] = 100
-            break;
-          }
-        }
-
-        // console.log(item)
         this.setLog(0, 'Param added: ' + item.param_name + ': ' + item.param_fullname)
         this.selectedParams.push(item)
       }
     },
 
+    //remove current param from the testing array
     removeItem(key) {
       this.selectedParams.splice(key, 1);
     },
 
-    setItemForm(item) {
-      this.selectedParam = item;
-    },
-
+    //set the generator frequency for the current param
     setItemFrequency(item, interval) {
       item.frequency = interval;
-      console.log(this.selectedParams)
     },
 
-    setNewParamValue(newParam, value, item) {
-      this.selectedParams[this.selectedParams.indexOf(item)][newParam] = value
-    },
+
+    // setNewParamValue(newParam, value, item) {
+    //   this.selectedParams[this.selectedParams.indexOf(item)][newParam] = value
+    // },
 
     onMessage(topic, message) {
       for (let item in this.selectedParams) {
@@ -187,8 +165,3 @@ export default {
 
 }
 </script>
-
-<style>
-/* @import './assets/App.scss'; */
-
-</style>

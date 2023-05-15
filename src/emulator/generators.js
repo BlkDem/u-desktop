@@ -1,4 +1,4 @@
-import random from "./random"
+import random from "../helpers/random"
 
 export default {
   Gens: {

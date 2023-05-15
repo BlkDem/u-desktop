@@ -1,8 +1,9 @@
 <template>
-  <div class=" max-height-76vh">
-  <div class="m-1 py-1 px-2 border border-1 rounded-2 text-whites" v-for="(item, key) in items" :key="key">
+  <div class=" max-height-70vh">
+  <div class="m-1 py-1 px-2 border border-1 rounded-2 text-whites"
+    v-for="(item, key) in items" :key="key">
 
-    <div class="row">
+    <div class="row  text-vertical-center">
 
       <div class="col-1">
         <i class="fa-solid fa-microchip text-success"></i>
@@ -26,7 +27,7 @@
 
       <div class="col-2">
         <div class="dropdown">
-          <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton1"
+          <button class="btn btn-secondary btn-sm dropdown-toggle w-100" type="button" id="dropdownMenuButton1"
             data-bs-toggle="dropdown" aria-expanded="false">
             {{ paramFunc[key].FuncName }}
           </button>
@@ -43,7 +44,7 @@
 
       <div class="col-1">
         <div class="dropdown">
-          <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton1"
+          <button class="btn btn-secondary btn-sm dropdown-toggle w-100" type="button" id="dropdownMenuButton1"
             data-bs-toggle="dropdown" aria-expanded="false">
             {{ items[key].frequency }}
           </button>
@@ -68,13 +69,15 @@
 
   </div>
   <textarea class="form-control stick-bottom bg-dark text-info" :value="logs" rows="8" id="textarea_id"></textarea>
+  <div class="bottom-controls"><input type="checkbox" class="" id="autoscroll" v-model="autoscroll">
+    <label for="autoscroll" class="mx-2">auto scroll</label> </div>
 </div>
 
 </template>
 
 <script>
 
-import Generators from '../helpers/generators';
+import Generators from '../emulator/generators';
 
 export default {
 
@@ -92,7 +95,8 @@ export default {
 
   data() {
     return {
-      paramFunc: []
+      paramFunc: [],
+      autoscroll: true,
     }
   },
 
@@ -113,7 +117,9 @@ export default {
     textareaScrollBottom() {
       var textarea = document.getElementById('textarea_id');
       setInterval(() => {
-        textarea.scrollTop = textarea.scrollHeight;
+        if (this.autoscroll) {
+          textarea.scrollTop = textarea.scrollHeight;
+        }
       }, 1000);
     },
 
@@ -148,13 +154,23 @@ export default {
 </script>
 
 <style scoped>
-.max-height-76vh {
-  height: 76vh;
+.max-height-70vh {
+  height: 70vh;
 }
 .stick-bottom {
   position: absolute;
   bottom: 32px;
   max-height: 200px;
   max-width: 99%;
+}
+.bottom-controls {
+  position: absolute;
+  bottom: 8px;
+  max-height: 20px;
+  width: 99%;
+}
+.text-vertical-center {
+  flex-direction: row;
+  align-items: center;
 }
 </style>
