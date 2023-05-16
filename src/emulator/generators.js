@@ -1,14 +1,14 @@
 import random from "../helpers/random"
 
-function* counter(start) {
-  // let from = start;
-  // while (true) {
-  //   yield from++;
-  // }
-  while (true) {
-    yield start++
-  }
-}
+// function* counter(start) {
+//   // let from = start;
+//   // while (true) {
+//   //   yield from++;
+//   // }
+//   while (true) {
+//     yield start++
+//   }
+// }
 
 export default {
 
@@ -41,20 +41,15 @@ export default {
 
     F_COUNTER: {
       FuncName: 'Counter',
-      value: (...args) => {
-        let i = counter(parseInt(args[0][0]))
-        // i.next()
-        console.log('generated', i.next());
-        // parseInt(args[0])
-        // console.log('i: ', i, args);
-        return parseInt(i.next().value);
+      value: () => {
+        return Math.round(new Date().getTime() / 1000);
       },
     },
 
     F_RGB: {
       FuncName: 'RGB',
       value: () => {
-        return random.Random(0, 255) * random.Random(0, 255) * random.Random(0, 255);
+        return random.Random(0, 255) * 65536 + random.Random(0, 255) * 256 + random.Random(0, 255)
       }
     },
   }

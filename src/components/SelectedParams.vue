@@ -36,7 +36,7 @@
             <li><a class="dropdown-item" @click="setFunction(key, 'F_RANGE', -10, 0)" href="#">Range (-10 0)</a></li>
             <li><a class="dropdown-item" @click="setFunction(key, 'F_RANGE', 0, 100)" href="#">Range (0 100)</a></li>
             <li><a class="dropdown-item" @click="setFunction(key, 'F_TIME')" href="#">Time</a></li>
-            <li><a class="dropdown-item" @click="setFunction(key, 'F_COUNTER', paramFunc[key].param_value)" href="#">Counter</a></li>
+            <li><a class="dropdown-item" @click="setFunction(key, 'F_COUNTER')" href="#">Counter</a></li>
             <li><a class="dropdown-item" @click="setFunction(key, 'F_RGB')" href="#">RGB</a></li>
             <li><a class="dropdown-item" @click="setFunction(key, 'F_SWITCH')" href="#">Switch (0-1)</a></li>
           </ul>
@@ -91,6 +91,10 @@ export default {
 
     logs: {
       type: String
+    },
+
+    uptime: {
+      type: Number
     }
   },
 

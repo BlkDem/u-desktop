@@ -114,13 +114,13 @@ export default {
 
       this.devices = devicesData.data.data
 
-      console.log(this.devices)
+      // console.log(this.devices)
 
     },
 
     async getMicros(id) {
 
-      console.log('getMicros')
+      // console.log('getMicros')
       const microsData = await axios.get(
         Config.microLink + '/' + id,
         Config.config

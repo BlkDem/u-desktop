@@ -152,7 +152,7 @@ export default {
             // const connectUrl = 'wss://ice9.umolab.ru:9883'
 
             try {
-                console.log(options)
+                // console.log(options)
                 this.client = mqtt.connect(connectUrl, options)
             } catch (error) {
                 console.log('MQTT: connect error', error)
@@ -171,7 +171,7 @@ export default {
             })
 
             this.client.on('message', (topic, message) => {
-                console.log(topic, message)
+                // console.log(topic, message)
                 this.setLog(0, 'MQTT topic: ' + topic + ' message: ' + message.toString())
                 this.$emit('onMessage', topic, message.toString())
 

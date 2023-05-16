@@ -25,6 +25,7 @@
         <SelectedParams ref="selectedParamsRef"
           :items="selectedParams"
           :logs="paramLogs"
+          :uptime="uptime"
           @removeItem="removeItem"
           @setItemFrequency="setItemFrequency"
           @setLog="setLog"
@@ -80,7 +81,15 @@ export default {
 
       timers: [],
 
+      uptime: 0,
+
     }
+  },
+
+  mounted() {
+    setInterval(() => {
+      this.uptime++;
+    }, 1000);
   },
 
   methods: {
