@@ -1,27 +1,32 @@
 <template>
   <CommonCard :cardCaption="'Params'">
-  <div class="">
-  <!-- <div class="p-2 border border-1 rounded-4"> -->
-  <div class="flex-left m-1 p-1 border border-1 rounded-2 text-white" v-for="(item, key) in params" :key="key">
-    <i class="fa-solid fa-microchip fa-2x text-info"></i>
-    <div class="p-2">{{ item.id }}</div>
-    <div>
+    <div class="">
+      <div class="m-1 py-1 px-2 border border-1 rounded-2 text-white row" v-for="(item, key) in params" :key="key">
+        <div class="col-1">
+          <i class="fa-solid fa-microchip text-info"></i>
+        </div>
+        <div class="col-3 text-center">{{ item.id }}</div>
+        <div class="col-6">
 
-      <a href="#"
-        @click.prevent="pushParam(item)">
-        {{ item.param_name }}
-      </a>
-    <!-- </div> -->
+          <a href="#" @click.prevent="pushParam(item)">
+            {{ item.param_name }}
+          </a>
+        </div>
+        <div class="col-1">
+          <a href="#" @click.prevent="pushParam(item)">
+            <i class="fa-regular fa-circle-right"></i>
+          </a>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
-</CommonCard>
+  </CommonCard>
 </template>
 
 <script>
 
 import axios from 'axios';
 import CommonCard from './CommonCard.vue'
+import Config from '@/config';
 
 export default {
 
@@ -31,7 +36,7 @@ export default {
 
   props: {
     microId: {
-      type: String,
+      default: undefined,
     }
   },
 
@@ -40,14 +45,14 @@ export default {
 
       // token: 'npFLOv5yRgtGA4wBhhAtPUnrS7RDXnkAeLtlr6el',
 
-      config: {
-        headers: {
-          Authorization: 'Bearer npFLOv5yRgtGA4wBhhAtPUnrS7RDXnkAeLtlr6el'
-        },
-      },
+      // config: {
+      //   headers: {
+      //     Authorization: 'Bearer npFLOv5yRgtGA4wBhhAtPUnrS7RDXnkAeLtlr6el'
+      //   },
+      // },
 
       // deviceLink: 'http://127.0.0.1:8000/api/devices/lookup/1/10',
-      paramLink: 'http://127.0.0.1:8000/api/micro_params/read/page/1/20/',
+      // paramLink: 'http://127.0.0.1:8000/api/micro_params/read/page/1/20/',
 
       params: [],
 
@@ -60,7 +65,6 @@ export default {
 
   watch: {
     microId() {
-      console.log('micro id')
       this.getParams(this.microId);
     }
   },
@@ -69,13 +73,13 @@ export default {
     async getParams(id) {
 
       const paramsData = await axios.get(
-        this.paramLink + id,
-        this.config
+        Config.paramLink + id,
+        Config.config
       )
 
       this.params = paramsData.data.data
 
-      console.log(this.params)
+      // console.log(this.params)
 
     },
 

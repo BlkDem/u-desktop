@@ -3,7 +3,7 @@
     <div class="text-white bg-dark "
         :class="{
             'expanded-fullscreen border-4 border-top rounded-top border-bottom rounded-bottom border-secondary p-2': isFullScreen,
-            'card my-3 left-side-panel': !isFullScreen
+            'card my-3': !isFullScreen
         }"
     >
         <div class="card-header flex-space pb-2">
@@ -65,7 +65,7 @@
 
 <script>
 
-import MakeID from '../helpers/MakeID';
+import MakeID from '../helpers/makeid';
 
 export default {
 

@@ -2,7 +2,9 @@
   <MasterSlaveLayout>
     <template v-slot:top>
       <TopNavbar
+
         @onMicroChange = "onMicroChange"
+        @playStopAction = "playStopAction"
       ></TopNavbar>
     </template>
 
@@ -15,27 +17,28 @@
     </template>
 
     <template v-slot:center>
-      <CommonCard :cardCaption="'Selected'">
-        <SelectedParams
+      <CommonCard
+        :cardCaption="'Selected'"
+        :cardCaptionAdd="deviceAddress"
+        :isAdditionalCaption="true"
+      >
+        <SelectedParams ref="selectedParamsRef"
           :items="selectedParams"
+          :logs="paramLogs"
+          :uptime="uptime"
           @removeItem="removeItem"
-          @setItemForm="setItemForm"
+          @setItemFrequency="setItemFrequency"
+          @setLog="setLog"
+          @syncParam="syncParam"
         >
-
         </SelectedParams>
       </CommonCard>
-    </template>
 
-    <template v-slot:right>
-
-      <CommonCard :cardCaption="'Setup'">
-        <SetupParam
-          :item="selectedParam"
-          @setNewParamValue="setNewParamValue"
-        >
-
-        </SetupParam>
-      </CommonCard>
+      <MyMqtt ref="myMqtt"
+          :selectedParams="selectedParams"
+          @onMessage="onMessage"
+          @setLog="setLog"
+      ></MyMqtt>
 
     </template>
 
@@ -47,14 +50,14 @@
 </template>
 
 <script>
-// import HelloWorld from './components/HelloWorld.vue'
-import MasterSlaveLayout from './components/MasterSlaveLayout.vue'
-import TopNavbar from './components/TopNavbar.vue'
-import MainFooter from './components/MainFooter.vue'
-import LoadControllers from './components/LoadControllers.vue'
-import CommonCard from './components/CommonCard.vue'
-import SelectedParams from './components/SelectedParams.vue'
-import SetupParam from './components/SetupParam.vue'
+import MasterSlaveLayout from './components/MasterSlaveLayout.vue';
+import TopNavbar from './components/TopNavbar.vue';
+import MainFooter from './components/MainFooter.vue';
+import LoadControllers from './components/LoadControllers.vue';
+import CommonCard from './components/CommonCard.vue';
+import SelectedParams from './components/SelectedParams.vue';
+import MyMqtt from './components/MyMqtt.vue';
+import Generators from './emulator/generators';
 
 export default {
   name: 'App',
@@ -65,57 +68,133 @@ export default {
     LoadControllers,
     CommonCard,
     SelectedParams,
-    SetupParam
+    MyMqtt
   },
 
   data() {
     return {
       microId: '',
+      deviceAddress: 'please select a device',
 
       selectedParams: [],
+      paramLogs: 'Logs',
 
-      selectedParam: {
-        id: 0,
-        param_name: ''
-      },
+      timers: [],
+
+      uptime: 0,
 
     }
   },
 
+  mounted() {
+    setInterval(() => {
+      this.uptime++;
+    }, 1000);
+  },
+
   methods: {
-    onMicroChange(id) {
+
+    setLog(log_level=0, ...args) {
+      //Max Log Size is 2 kB
+      if (this.paramLogs.length > 2048) this.paramLogs = '';
+
+      let log_level_text = 'undefined: ';
+      switch (log_level) {
+        case 0: log_level_text = 'info: '; break;
+        case 1: log_level_text = 'warning: '; break;
+        case 2: log_level_text = 'error: '; break;
+      }
+
+      //Clear init value
+      if (this.paramLogs==='Logs') this.paramLogs = ''
+      this.paramLogs += log_level_text + [...args].join(' ') + "\r\n";
+    },
+
+    startActions() {
+      let freq = 0
+      for (let item in this.selectedParams) {
+        freq = this.selectedParams[item].frequency * 1000
+        if (isNaN(freq)) continue;
+        // console.log(freq)
+        this.timers.push(
+            setInterval(() => {
+              // console.log('timer', this.selectedParams[item])
+              // console.log(Generators.Gens[this.selectedParams[item].func].value(this.selectedParams[item].args))
+              this.$refs.myMqtt.doPublish(
+                this.selectedParams[item].param_fullname,
+                Generators.Gens[this.selectedParams[item].func].value(this.selectedParams[item].args).toString()
+              )
+          }, freq)
+        );
+      }
+      console.log(this.timers)
+    },
+
+    stopActions() {
+      for (let item in this.timers) {
+        clearInterval(this.timers[item]);
+      }
+      this.timers = []
+    },
+
+    playStopAction(isExecuted) {
+      if (!isExecuted) {
+        this.stopActions();
+      } else {
+        this.startActions();
+      }
+    },
+
+    onMicroChange(id, deviceAddress) {
       this.microId = id;
-      console.log('event: ', id);
+      this.deviceAddress = deviceAddress;
+      this.setLog(0, 'Micro selected: ', `(${id})`, deviceAddress);
+    },
+
+    syncParam(key, item) {
+      this.selectedParams[key] = item;
+      console.log(this.selectedParams[key])
+    },
+
+    //set the generator frequency for the current param
+    setItemFrequency(item, interval) {
+      item.frequency = interval;
     },
 
     pushItem(item){
-      if (this.selectedParams.length > 4) return;
+
+      //Max generate param count is 5
+      if (this.selectedParams.length > 4) {
+        this.setLog(1, 'Max selected param count is 5')
+        return;
+      }
+
+      //Ignore if exists
       if (!this.selectedParams.includes(item)) {
-        item['range_from'] = 0
-        item['range_to'] = 100
-        item['new_value'] = 0
+
+        //create param full path for MQTT
+        item.param_fullname = '/' + item.device_micro_idx + '/' + item.param_name
+        item.timerId = -1;
+
+        this.setLog(0, 'Param added: ' + item.param_name + ': ' + item.param_fullname)
         this.selectedParams.push(item)
       }
     },
 
+    //remove current param from the testing array
     removeItem(key) {
       this.selectedParams.splice(key, 1);
     },
 
-    setItemForm(item) {
-      this.selectedParam = item;
-    },
-
-    setNewParamValue(newParam, value, item) {
-      this.selectedParams[this.selectedParams.indexOf(item)][newParam] = value
+    // MQTT messages event
+    onMessage(topic, message) {
+      for (let item in this.selectedParams) {
+        if (this.selectedParams[item].param_fullname === topic) {
+          this.selectedParams[item].param_value = message;
+        }
+      }
     }
-
   }
 
 }
 </script>
-
-<style>
-@import './assets/App.scss';
-
-</style>
