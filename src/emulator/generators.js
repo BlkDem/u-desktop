@@ -12,7 +12,7 @@ import random from "../helpers/random"
 
 export default {
 
-  Gens: {
+  Factory: {
     F_RANGE: {
       FuncName: 'Range',
       value: (...args) => {
