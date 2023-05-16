@@ -118,11 +118,9 @@ export default {
         // console.log(freq)
         this.timers.push(
             setInterval(() => {
-              // console.log('timer', this.selectedParams[item])
-              // console.log(Generators.Gens[this.selectedParams[item].func].value(this.selectedParams[item].args))
               this.$refs.myMqtt.doPublish(
                 this.selectedParams[item].param_fullname,
-                Generators.Gens[this.selectedParams[item].func].value(this.selectedParams[item].args).toString()
+                Generators.Factory[this.selectedParams[item].func].value(this.selectedParams[item].args).toString()
               )
           }, freq)
         );

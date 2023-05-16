@@ -141,7 +141,7 @@ export default {
       console.log(args.length)
       this.paramFunc[key].func = func;
       this.paramFunc[key].args = args;
-      this.paramFunc[key].FuncName = Generators.Gens[func].FuncName
+      this.paramFunc[key].FuncName = Generators.Factory[func].FuncName
       this.paramFunc[key].FuncName += (args.length>0)?' (' + [...args].join(' ') + ')':'';
 
       this.$emit('syncParam', key, this.paramFunc[key]);

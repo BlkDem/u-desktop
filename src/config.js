@@ -1,5 +1,5 @@
-const link = 'http://127.0.0.1:8000/api/';
-// const link = 'https://iotman.blkdem.ru/api/';
+// const link = 'http://127.0.0.1:8000/api/';
+const link = 'https://iotman.blkdem.ru/api/';
 
 export default {
   config: {
