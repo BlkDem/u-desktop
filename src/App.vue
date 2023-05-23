@@ -9,7 +9,7 @@
     </template>
 
     <template v-slot:left>
-      <LoadControllers
+      <LoadControllers ref="loadControllers"
         :microId="microId"
         @pushItem="pushItem"
       >
@@ -111,16 +111,25 @@ export default {
     },
 
     startActions() {
+
       let freq = 0
+
       for (let item in this.selectedParams) {
+
         freq = this.selectedParams[item].frequency * 1000
         if (isNaN(freq)) continue;
         // console.log(freq)
+
+        const gen = Generators.Factory[this.selectedParams[item].func].value(this.selectedParams[item].args);
+
         this.timers.push(
             setInterval(() => {
+
+              var payload = (typeof gen === 'function')?gen().toString():gen.toString();
+
               this.$refs.myMqtt.doPublish(
                 this.selectedParams[item].param_fullname,
-                Generators.Factory[this.selectedParams[item].func].value(this.selectedParams[item].args).toString()
+                payload
               )
           }, freq)
         );
@@ -144,8 +153,11 @@ export default {
     },
 
     onMicroChange(id, deviceAddress) {
+      this.$refs.loadControllers.clearItems();
+      // this.$refs.selectedParamsRef.clearItems();
       this.microId = id;
       this.deviceAddress = deviceAddress;
+
       this.setLog(0, 'Micro selected: ', `(${id})`, deviceAddress);
     },
 
@@ -175,6 +187,7 @@ export default {
         item.timerId = -1;
 
         this.setLog(0, 'Param added: ' + item.param_name + ': ' + item.param_fullname)
+        console.log(item)
         this.selectedParams.push(item)
       }
     },

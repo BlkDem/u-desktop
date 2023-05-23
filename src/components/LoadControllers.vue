@@ -43,17 +43,6 @@ export default {
   data() {
     return {
 
-      // token: 'npFLOv5yRgtGA4wBhhAtPUnrS7RDXnkAeLtlr6el',
-
-      // config: {
-      //   headers: {
-      //     Authorization: 'Bearer npFLOv5yRgtGA4wBhhAtPUnrS7RDXnkAeLtlr6el'
-      //   },
-      // },
-
-      // deviceLink: 'http://127.0.0.1:8000/api/devices/lookup/1/10',
-      // paramLink: 'http://127.0.0.1:8000/api/micro_params/read/page/1/20/',
-
       params: [],
 
     }
@@ -85,6 +74,10 @@ export default {
 
     pushParam(item) {
       this.$emit('pushItem', item)
+    },
+
+    clearItems() {
+      this.params = []
     }
 
   }
