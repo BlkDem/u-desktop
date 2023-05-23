@@ -15,6 +15,6 @@ npm run build
 npm run electron:build
 ```
 
-### Vuew test build
+### View test build
 https://u-desktop.umolab.ru/
 
