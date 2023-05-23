@@ -37,6 +37,7 @@
             <li><a class="dropdown-item" @click="setFunction(key, 'F_RANGE', 0, 100)" href="#">Range (0 100)</a></li>
             <li><a class="dropdown-item" @click="setFunction(key, 'F_TIME')" href="#">Time</a></li>
             <li><a class="dropdown-item" @click="setFunction(key, 'F_COUNTER')" href="#">Counter</a></li>
+            <li><a class="dropdown-item" @click="setFunction(key, 'F_COUNTER_FROM')" href="#">Counter From</a></li>
             <li><a class="dropdown-item" @click="setFunction(key, 'F_RGB')" href="#">RGB</a></li>
             <li><a class="dropdown-item" @click="setFunction(key, 'F_SWITCH')" href="#">Switch (0-1)</a></li>
           </ul>
@@ -109,6 +110,12 @@ export default {
     this.paramFunc = this.items
   },
 
+  // watch: {
+  //   paramFunc() {
+  //     return this.items
+  //   }
+  // },
+
   mounted() {
     this.textareaScrollBottom();
   },
@@ -133,6 +140,10 @@ export default {
       this.$emit('removeItem', key);
     },
 
+    clearItems() {
+      this.paramFunc = [];
+    },
+
     updateParamValue(key, value) {
       this.paramFunc[key].param_value = value
     },
@@ -146,7 +157,7 @@ export default {
 
       this.$emit('syncParam', key, this.paramFunc[key]);
 
-      console.log('paramFunc: ', this.paramFunc)
+      // console.log('paramFunc: ', this.paramFunc)
       // console.log(key, Generators.Gens[func].value(...args));
     },
 

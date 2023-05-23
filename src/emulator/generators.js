@@ -40,9 +40,22 @@ export default {
     },
 
     F_COUNTER: {
-      FuncName: 'Counter',
+      FuncName: 'Counter Time',
       value: () => {
         return Math.round(new Date().getTime() / 1000);
+      },
+    },
+
+    F_COUNTER_FROM: {
+      FuncName: 'Counter From',
+      value: (fromValue=0) => {
+        var start = fromValue;
+
+        return function() {
+          start++;
+          return start;
+        }
+
       },
     },
 
