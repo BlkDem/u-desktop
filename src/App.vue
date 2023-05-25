@@ -118,15 +118,14 @@ export default {
 
         freq = this.selectedParams[item].frequency * 1000
         if (isNaN(freq)) continue;
-        // console.log(freq)
-
-        const gen = Generators.Factory[this.selectedParams[item].func].value(this.selectedParams[item].args);
 
         this.timers.push(
             setInterval(() => {
 
-              var payload = (typeof gen === 'function')?gen().toString():gen.toString();
+              const gen = Generators.Factory[this.selectedParams[item].func].value(this.selectedParams[item].args);
+              const payload = (typeof gen === 'function')?gen().toString():gen.toString();
 
+              // console.log(payload)
               this.$refs.myMqtt.doPublish(
                 this.selectedParams[item].param_fullname,
                 payload
