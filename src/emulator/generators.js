@@ -1,22 +1,12 @@
 import random from "../helpers/random"
 
-// function* counter(start) {
-//   // let from = start;
-//   // while (true) {
-//   //   yield from++;
-//   // }
-//   while (true) {
-//     yield start++
-//   }
-// }
-
 export default {
 
   Factory: {
     F_RANGE: {
       FuncName: 'Range',
       value: (...args) => {
-        console.log('range: ', args[0])
+        // console.log('range: ', args[0])
         return random.Random(
           parseInt(args[0][0]),
           parseInt(args[0][1])
